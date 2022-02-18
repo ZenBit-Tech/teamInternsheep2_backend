@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {User} from './users.entity';
-import {Repository} from 'typeorm';
+import {getConnection, Repository} from 'typeorm';
 import {CreateUserDto} from './dto/create.user.dto';
 import {oneUser} from "./dto/findOne.user.dto";
 
@@ -14,22 +14,43 @@ export class UsersService {
     }
 
     async createUser(dto: CreateUserDto) {
-        const user = await this.usersRepository.save(dto);
-        return user;
+        try {
+            const user = await this.usersRepository.save(dto);
+            return user;
+        } catch (e) {
+            return e
+        }
     }
 
     async getAllUsers() {
-        const users = await this.usersRepository.find();
-        return users;
+        try {
+            const users = await this.usersRepository.find();
+            return users;
+        } catch (e) {
+            return e
+        }
     }
 
     async getOneUser(id: oneUser) {
-        const user = await this.usersRepository.findOne({where: id});
-        return user;
+        try {
+            const user = await this.usersRepository.findOne({where: id});
+            return user;
+        } catch (e) {
+            return e
+        }
     }
 
     async removeUser(id: oneUser) {
-            const user = await this.usersRepository.delete(id)
-        return 'Успішне видалення користувача'
+        try {
+            await getConnection()
+                .createQueryBuilder()
+                .delete()
+                .from(User)
+                .where("id = :id", {id})
+                .execute();
+            return 'Успішне видалення'
+        } catch (e) {
+            return e
+        }
     }
 }
