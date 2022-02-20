@@ -5,37 +5,39 @@ import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {User} from "./users.entity";
 import {oneUser} from './dto/findOne.user.dto'
 
+
 @ApiTags('Пользователи')
 @Controller('users')
 export class UsersController {
-    constructor(private usersService: UsersService) {
-    }
+    constructor(
+        private usersService: UsersService
+    ) {}
 
     @ApiOperation({summary: 'Создание пользователя'}) //описывает для чего данный запрос
     @ApiResponse({status: 200, type: User}) // ожидаемый ответ от сервера
     @Post()
-    create(@Body() userDto: CreateUserDto) {
+    create(@Body() userDto: CreateUserDto):Promise<User> {
         return this.usersService.createUser(userDto);
     }
 
     @ApiOperation({summary: 'Получение всех пользователей'})
     @ApiResponse({status: 200, type: [User]})
     @Get()
-    getAll() {
+    getAll():Promise<User[]> {
         return this.usersService.getAllUsers();
     }
 
     @ApiOperation({summary: 'Получение пользывателя по id'})
     @ApiResponse({status: 200, type: User})
     @Get(':id')
-    getOne(@Param() params: oneUser) {
+    getOne(@Param() params: oneUser):Promise<User> {
         return this.usersService.getOneUser(params);
     }
 
     @ApiOperation({summary: 'Удалить пользывателя по id'})
     @ApiResponse({status: 200, type: User})
     @Delete('?')
-    del(@Query('id') id: oneUser) {
+    del(@Query('id') id: oneUser):Promise<string> {
         return this.usersService.removeUser(id);
     }
 }

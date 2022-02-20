@@ -13,7 +13,7 @@ export class UsersService {
     ) {
     }
 
-    async createUser(dto: CreateUserDto) {
+    async createUser(dto: CreateUserDto):Promise<User> {
         try {
             const user = await this.usersRepository.save(dto);
             return user;
@@ -22,7 +22,7 @@ export class UsersService {
         }
     }
 
-    async getAllUsers() {
+    async getAllUsers():Promise<User[]> {
         try {
             const users = await this.usersRepository.find();
             return users;
@@ -31,7 +31,7 @@ export class UsersService {
         }
     }
 
-    async getOneUser(id: oneUser) {
+    async getOneUser(id: oneUser):Promise<User> {
         try {
             const user = await this.usersRepository.findOne({where: id});
             return user;
@@ -40,7 +40,7 @@ export class UsersService {
         }
     }
 
-    async removeUser(id: oneUser) {
+    async removeUser(id: oneUser):Promise<string> {
         try {
             await getConnection()
                 .createQueryBuilder()
