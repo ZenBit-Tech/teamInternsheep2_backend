@@ -1,5 +1,8 @@
+import { IsNumberString } from 'class-validator';
 import {ApiProperty} from "@nestjs/swagger";
 
-export interface oneUser {
-    id:number
-  }
+export class oneUser {
+    @ApiProperty()
+    @IsNumberString()
+    id: number;
+}

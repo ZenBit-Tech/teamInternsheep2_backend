@@ -1,13 +1,22 @@
-import { Controller, Body, Post } from '@nestjs/common';
+import { Controller, Body, Post, Get, Req, UseGuards } from '@nestjs/common';
 import { SigninFormDataDto } from "../../dto/signin.user.dto";
-import { Observable } from 'rxjs';
 import { SigninService } from './signin.service';
+import { AuthGuard } from '@nestjs/passport';
 
-@Controller('auth/signin')
+@Controller()
 export class SigninController {
   constructor(private readonly SigninService: SigninService) {}
-  @Post()
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth(@Req() req) {}
+
+  @Get('google/redirect')
+  @UseGuards(AuthGuard('google'))
+  googleAuthRedirect(@Req() req) {
+    return this.SigninService.googleLogin(req)
+  }
+  @Post('auth/signin')
     create(@Body() formData:SigninFormDataDto){
-      return this.SigninService.authenticationByEmail(formData);
+      return this.SigninService.signInByEmail(formData);
     }
 }

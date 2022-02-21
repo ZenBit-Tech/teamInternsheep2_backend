@@ -4,20 +4,32 @@ import { User } from '../users/users.entity';
 
 @Injectable()
 export class SigninService {
-  async authenticationByEmail(formData: SigninFormDataDto){
-    try {
+  async signInByEmail(formData: SigninFormDataDto){
       const user = await User.findOne({where: {
           email: formData.email,
         }
       })
-      if (user.password === formData.password) {
+      if (user && user.password === formData.password) {
         delete user.password;
         return user;
       }else{
-        throw new Error("Wrong password or email");
+        return "Incorrect email or password"
       }
-    } catch (error) {
-      return error
-    }
   }
+  async googleLogin(req) {
+      if (!req.user) {
+        return 'No user from google';
+      }else{
+        const user = await User.findOne({where: {
+          email: req.user.email,
+        }
+      })
+      if (user) {
+        delete user.password;
+        return user;
+      }else{
+        return "Incorrect user account"
+      }
+      }
+    }
 }
