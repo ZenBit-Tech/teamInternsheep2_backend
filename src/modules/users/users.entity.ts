@@ -1,25 +1,56 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import {ApiProperty} from "@nestjs/swagger";
-
-@Entity()
-export class User {
-  @ApiProperty({example:'1', description:'Уникальный индетификатор'})
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @ApiProperty({example:'Валерий', description:'Имя'})
-  @Column({ type: 'varchar', width: 30 })
-  firstName: string;
-
-  @ApiProperty({example:'Иванов', description:'Фамилия'})
-  @Column({ type: 'varchar', width: 30 })
-  lastName: string;
-
-  @ApiProperty({example:'+380509995263', description:'Номер телефона'})
-  @Column({
-    type: 'varchar',
-    length: 13,
-    unique: true,
-  })
-  phoneNumber: string;
+import {
+    BaseEntity,
+    BeforeInsert,
+    Column,
+    Entity,
+    PrimaryGeneratedColumn,
+  } from 'typeorm';
+  
+  enum UserRole {
+    OWNER = "owner",
+    FREELANCER = "freelancer",
 }
+
+  import {ApiProperty} from "@nestjs/swagger";
+  
+  import * as bcrypt from 'bcryptjs';
+  
+  @Entity()
+  export class User extends BaseEntity {
+    @ApiProperty()
+    @PrimaryGeneratedColumn({type: 'int'})
+    id: number;
+  
+    @ApiProperty()
+    @Column({ type: 'varchar', width: 30 })
+    firstName: string;
+
+    @ApiProperty()
+    @Column({ type: 'varchar', width: 30 })
+    lastName: string;
+
+    @ApiProperty()
+    @Column({ type: 'varchar', width: 30, unique: true})
+    email: string;
+  
+    @ApiProperty()
+    @Column({ type: 'varchar', width: 24 })
+    password: string;
+
+    @ApiProperty()
+    @Column({ type: 'varchar', width: 30 })
+    phoneNumber: string;
+
+    @ApiProperty()
+    @Column({ type: 'enum', enum: UserRole, })
+    userRole: string;
+  
+    @BeforeInsert()
+    async hashPassword() {
+      this.password = await bcrypt.hash(this.password, 24);
+    }
+  
+    async validatePassword(password: string): Promise<boolean> {
+      return bcrypt.compare(password, this.password);
+    }
+  }
