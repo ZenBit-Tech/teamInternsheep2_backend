@@ -3,19 +3,19 @@ import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class User {
-  @ApiProperty({ example: '1', description: 'Уникальный индетификатор' })
+  @ApiProperty({ example: '1', description: 'Unique identificator' })
   @PrimaryGeneratedColumn({ type: 'int' })
   id: number;
 
-  @ApiProperty({ example: 'Валерий', description: 'Имя' })
+  @ApiProperty({ example: 'Bob', description: 'First name' })
   @Column({ type: 'varchar', width: 30 })
   firstName: string;
 
-  @ApiProperty({ example: 'Иванов', description: 'Фамилия' })
+  @ApiProperty({ example: 'Sponque', description: 'Last name' })
   @Column({ type: 'varchar', width: 30 })
   lastName: string;
 
-  @ApiProperty({ example: 'qwert@gmail.com', description: 'email' })
+  @ApiProperty({ example: 'qwerty@gmail.com', description: 'email' })
   @Column({ type: 'varchar', width: 50, unique: true })
   email: string;
 
@@ -23,7 +23,7 @@ export class User {
   @Column({ type: 'varchar', width: 50 })
   password: string;
 
-  @ApiProperty({ example: '+380509995263', description: 'Номер телефона' })
+  @ApiProperty({ example: '+380509995263', description: 'Phone number' })
   @Column({
     type: 'varchar',
     length: 13,

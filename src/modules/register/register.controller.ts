@@ -9,8 +9,8 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 export class RegisterController {
   constructor(private readonly registerService: RegisterService) {}
 
-  @ApiOperation({ summary: 'Создание пользователя' }) // описывает для чего данный запрос
-  @ApiResponse({ status: 200, type: User }) // ожидаемый ответ от сервера
+  @ApiOperation({ summary: 'User creation' })
+  @ApiResponse({ status: 200, type: User })
   @Post()
   create(@Body() userDto: CreateUserDto): Promise<User> {
     return this.registerService.createUser(userDto);
