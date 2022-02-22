@@ -11,7 +11,6 @@ async function start() {
     .setDescription('Second command documentation')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  // http://localhost:8000/api/docs/  -view docks
   SwaggerModule.setup('/api/docs', app, document);
 
   await app.listen(PORT, () => console.log(`Server started on port = ${PORT}`));
