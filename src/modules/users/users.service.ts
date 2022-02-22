@@ -2,8 +2,8 @@ import {Injectable, Inject, forwardRef} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {User} from './users.entity';
 import {getConnection, Repository} from 'typeorm';
-import {CreateUserDto} from '../../dto/create.user.dto';
-import {oneUser} from "../../dto/findOne.user.dto";
+import {CreateUserDto} from '../dto/create.user.dto';
+import {oneUser} from "../dto/findOne.user.dto";
 import { UserModule } from './user.module';
 
 @Injectable()

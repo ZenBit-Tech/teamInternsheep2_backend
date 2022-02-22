@@ -1,5 +1,5 @@
-import { Controller, Body, Post, Get, Req, UseGuards } from '@nestjs/common';
-import { SigninFormDataDto } from "../../dto/signin.user.dto";
+import { Controller, Body, Post, Get, Req, UseGuards, Request, Patch} from '@nestjs/common';
+import { SigninFormDataDto } from "../dto/signin.user.dto";
 import { SigninService } from './signin.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -18,5 +18,9 @@ export class SigninController {
   @Post('auth/signin')
     create(@Body() formData:SigninFormDataDto){
       return this.SigninService.signInByEmail(formData);
-    }
+  }
+  @Patch('update-password')
+  update(@Body() formData) {
+      return this.SigninService.updateUserPassword(formData);
+}
 }
