@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { User } from './modules/users/users.entity';
 import { UsersModule } from './modules/users/users.module';
+import { RegisterModule } from './modules/register/register.module';
 
 @Module({
   controllers: [AppController],
@@ -22,10 +23,11 @@ import { UsersModule } from './modules/users/users.module';
       password: process.env.MySql_PASSWORD,
       database: process.env.MySql_DB,
       entities: [User],
-      synchronize: true,
+      synchronize: false,
       autoLoadEntities: true,
     }),
     UsersModule,
+    RegisterModule,
   ],
 })
 export class AppModule {}
