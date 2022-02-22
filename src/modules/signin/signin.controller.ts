@@ -6,6 +6,8 @@ import { AuthGuard } from '@nestjs/passport';
 @Controller()
 export class SigninController {
   constructor(private readonly SigninService: SigninService) {}
+
+  //Google authorization controllers start {
   @Get('google')
   @UseGuards(AuthGuard('google'))
   async googleAuth(@Req() req) {}
@@ -15,10 +17,16 @@ export class SigninController {
   googleAuthRedirect(@Req() req) {
     return this.SigninService.googleLogin(req)
   }
+
+  //Google authorization controllers end }
+
+  //Controller to find user by email
   @Post('auth/signin')
     create(@Body() formData:SigninFormDataDto){
       return this.SigninService.signInByEmail(formData);
   }
+
+  //Controller to update user password
   @Patch('update-password')
   update(@Body() formData) {
       return this.SigninService.updateUserPassword(formData);

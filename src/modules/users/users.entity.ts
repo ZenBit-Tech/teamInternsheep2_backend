@@ -17,30 +17,37 @@ import {
   
   @Entity()
   export class User extends BaseEntity {
+    // example:'1', description:'Уникальный индетификатор'
     @ApiProperty()
     @PrimaryGeneratedColumn({type: 'int'})
     id: number;
   
+    // example:'Валерий', description:'Имя'
     @ApiProperty()
     @Column({ type: 'varchar', width: 30 })
     firstName: string;
 
+    // example:'Иванов', description:'Фамилия'
     @ApiProperty()
     @Column({ type: 'varchar', width: 30 })
     lastName: string;
 
+    // example:'email@gmail.com', description:'Имейл'
     @ApiProperty()
     @Column({ type: 'varchar', width: 30, unique: true})
     email: string;
   
+    // example:'42сверхСекретный', description:'Пароль'
     @ApiProperty()
     @Column({ type: 'varchar', width: 24 })
     password: string;
 
+    // example:'+111 11111111', description:'Мобильный телефон'
     @ApiProperty()
     @Column({ type: 'varchar', width: 30 })
     phoneNumber: string;
 
+    // example:'Фрилансер', description:'РольПользователя'
     @ApiProperty()
     @Column({ type: 'enum', enum: UserRole, })
     userRole: string;

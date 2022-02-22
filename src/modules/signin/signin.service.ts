@@ -5,6 +5,8 @@ import {getConnection} from 'typeorm';
 
 @Injectable()
 export class SigninService {
+
+  //Finds user by email and returns user info from database
   async signInByEmail(formData: SigninFormDataDto){
       const user = await User.findOne({where: {
           email: formData.email,
@@ -17,6 +19,8 @@ export class SigninService {
         return "Incorrect email or password"
       }
   }
+
+  //Finds user by google authorization and returns user info from database
   async googleLogin(req) {
       if (!req.user) {
         return 'No user from google';
@@ -34,6 +38,7 @@ export class SigninService {
       }
     }
 
+    //Updates user password
     async updateUserPassword(formData) {
       try {
           await getConnection()
