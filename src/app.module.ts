@@ -1,16 +1,14 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { User } from './modules/users/users.entity';
-import { UserModule } from './modules/users/user.module';
+import { UsersModule } from './modules/users/users.module';
 import { RegisterModule } from './modules/register/register.module';
 import { GoogleStrategy } from "./modules/google/google.strategy";
 import { MailModule } from './modules/mail/mail.module';;
 
 @Module({
-  controllers: [AppController],
   providers: [AppService],
   imports: [
     ConfigModule.forRoot({
@@ -28,7 +26,7 @@ import { MailModule } from './modules/mail/mail.module';;
       synchronize: false,
       autoLoadEntities: true,
     }),
-    UserModule,
+    UsersModule,
     RegisterModule,
     MailModule,
     GoogleStrategy

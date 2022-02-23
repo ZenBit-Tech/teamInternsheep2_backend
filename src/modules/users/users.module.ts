@@ -27,4 +27,4 @@ const entities = [User];
     }),
   SigninModule]
 })
-export class UserModule {}
+export class UsersModule {}
