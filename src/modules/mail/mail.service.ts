@@ -1,14 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 
-//Mail service
 @Injectable()
 export class MailService {
   constructor(private readonly mailerService: MailerService) {}
   
   async sendResetPasswordMail(email:string){
     return this.mailerService.sendMail({
-      //Response letter template
       to: `${email}`,
       from: process.env.MAIL_DEFAULT_FROM,
       subject: 'Welcome!',

@@ -7,8 +7,7 @@ require('dotenv').config()
 
 @Injectable()
 export class SigninService {
-
-  async signInByEmail(formData: SigninFormDto){
+  async signInByEmail(formData: SigninFormDto):Promise<User | String>{
       const user = await User.findOne({where: {
           email: formData.email,
         }
@@ -23,7 +22,7 @@ export class SigninService {
       }
   
 
-  async googleLogin(req) {
+  async googleLogin(req):Promise<User | String> {
       if (!req.user) {
         return 'No user from google';
       }else{
@@ -40,7 +39,7 @@ export class SigninService {
       }
     }
 
-    async updateUserPassword(formData) {
+    async updateUserPassword(formData):Promise<string> {
       const hash = await bcrypt.hash(formData.password, Number(process.env.SALT_OR_ROUNDS))
       if (hash) {
         try {
@@ -50,12 +49,12 @@ export class SigninService {
               .set({password: hash})
               .where({email: formData.email})
               .execute(); 
-          return "success"  
         } catch (error) {
             return error
         }
+        return "Password has been updated."
       }else{
-        return "error"
+        return "An error occurred."
       }
   }
 }
