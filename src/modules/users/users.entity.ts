@@ -1,10 +1,5 @@
 import {
-    BaseEntity,
-    BeforeInsert,
-    Column,
-    Entity,
-    PrimaryGeneratedColumn,
-  } from 'typeorm';
+    BaseEntity, Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
   
   enum UserRole {
     OWNER = "owner",
@@ -12,52 +7,36 @@ import {
 }
 
   import {ApiProperty} from "@nestjs/swagger";
-  
-  import * as bcrypt from 'bcryptjs';
-  
+
   @Entity()
   export class User extends BaseEntity {
-    // example:'1', description:'Уникальный индетификатор'
-    @ApiProperty()
+    @ApiProperty({example:'1', description:'Уникальный индетификатор'})
     @PrimaryGeneratedColumn({type: 'int'})
     id: number;
   
-    // example:'Валерий', description:'Имя'
-    @ApiProperty()
+    @ApiProperty({example:'Валерий', description:'Имя'})
     @Column({ type: 'varchar', width: 30 })
     firstName: string;
 
-    // example:'Иванов', description:'Фамилия'
-    @ApiProperty()
+    @ApiProperty({example:'Иванов', description:'Фамилия'})
     @Column({ type: 'varchar', width: 30 })
     lastName: string;
 
-    // example:'email@gmail.com', description:'Имейл'
-    @ApiProperty()
+    @ApiProperty({ example:'email@gmail.com', description:'Имейл'})
     @Column({ type: 'varchar', width: 30, unique: true})
     email: string;
-  
-    // example:'42сверхСекретный', description:'Пароль'
-    @ApiProperty()
+
+    @ApiProperty({example:'42Секрет', description:'Пароль'})
     @Column({ type: 'varchar', width: 24 })
     password: string;
 
-    // example:'+111 11111111', description:'Мобильный телефон'
-    @ApiProperty()
+
+    @ApiProperty({example:'+111 11111111', description:'Мобильный телефон'})
     @Column({ type: 'varchar', width: 30 })
     phoneNumber: string;
 
-    // example:'Фрилансер', description:'РольПользователя'
-    @ApiProperty()
+
+    @ApiProperty({example:'Фрилансер', description:'РольПользователя'})
     @Column({ type: 'enum', enum: UserRole, })
     userRole: string;
-  
-    @BeforeInsert()
-    async hashPassword() {
-      this.password = await bcrypt.hash(this.password, 24);
-    }
-  
-    async validatePassword(password: string): Promise<boolean> {
-      return bcrypt.compare(password, this.password);
-    }
   }

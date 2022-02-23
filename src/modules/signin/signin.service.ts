@@ -1,26 +1,28 @@
 import { Injectable } from '@nestjs/common';
-import { SigninFormDataDto } from "../dto/signin.user.dto";
+import { SigninFormDto } from "../dto/signin.user.dto";
 import { User } from '../users/users.entity';
 import {getConnection} from 'typeorm';
+import * as bcrypt from 'bcrypt'
+require('dotenv').config()
 
 @Injectable()
 export class SigninService {
 
-  //Finds user by email and returns user info from database
-  async signInByEmail(formData: SigninFormDataDto){
+  async signInByEmail(formData: SigninFormDto){
       const user = await User.findOne({where: {
           email: formData.email,
         }
       })
-      if (user && user.password === formData.password) {
-        delete user.password;
-        return user;
-      }else{
-        return "Incorrect email or password"
+       const isMatch = await bcrypt.compare( formData.password ,user.password)
+        if (user && isMatch) {
+          delete user.password;
+          return user;
+        }else{
+          return "Incorrect email or password"
+        }
       }
-  }
+  
 
-  //Finds user by google authorization and returns user info from database
   async googleLogin(req) {
       if (!req.user) {
         return 'No user from google';
@@ -38,18 +40,22 @@ export class SigninService {
       }
     }
 
-    //Updates user password
     async updateUserPassword(formData) {
-      try {
+      const hash = await bcrypt.hash(formData.password, Number(process.env.SALT_OR_ROUNDS))
+      if (hash) {
+        try {
           await getConnection()
               .createQueryBuilder()
               .update(User)
-              .set({password: formData.password})
+              .set({password: hash})
               .where({email: formData.email})
               .execute(); 
           return "success"  
-      } catch (error) {
-          return error
+        } catch (error) {
+            return error
+        }
+      }else{
+        return "error"
       }
   }
 }

@@ -22,7 +22,7 @@ import { MailController } from './mail.controller';
         },
       },
       defaults: {
-        from:'<noreply@construct.net>',
+        from:process.env.MAIL_DEFAULT_FROM,
       },
     }),
   ],

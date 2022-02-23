@@ -6,12 +6,12 @@ import { MailerService } from '@nestjs-modules/mailer';
 export class MailService {
   constructor(private readonly mailerService: MailerService) {}
   
-  async sendPasswordMail(email:string){
+  async sendResetPasswordMail(email:string){
     return this.mailerService.sendMail({
       //Response letter template
       to: `${email}`,
-      from: "<noreply@construct.net>",
-      subject: 'Welcome to Holidays!',
+      from: process.env.MAIL_DEFAULT_FROM,
+      subject: 'Welcome!',
       text: 'Use this password',
       html: `<div>
               <h1>Hello ${email}!</h1>

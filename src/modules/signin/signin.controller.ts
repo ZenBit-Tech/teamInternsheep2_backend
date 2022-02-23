@@ -1,5 +1,5 @@
 import { Controller, Body, Post, Get, Req, UseGuards, Request, Patch} from '@nestjs/common';
-import { SigninFormDataDto } from "../dto/signin.user.dto";
+import { SigninFormDto } from "../dto/signin.user.dto";
 import { SigninService } from './signin.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -7,7 +7,6 @@ import { AuthGuard } from '@nestjs/passport';
 export class SigninController {
   constructor(private readonly SigninService: SigninService) {}
 
-  //Google authorization controllers start {
   @Get('google')
   @UseGuards(AuthGuard('google'))
   async googleAuth(@Req() req) {}
@@ -18,17 +17,13 @@ export class SigninController {
     return this.SigninService.googleLogin(req)
   }
 
-  //Google authorization controllers end }
-
-  //Controller to find user by email
   @Post('auth/signin')
-    create(@Body() formData:SigninFormDataDto){
+    authorize(@Body() formData:SigninFormDto){
       return this.SigninService.signInByEmail(formData);
   }
 
-  //Controller to update user password
   @Patch('update-password')
-  update(@Body() formData) {
+    update(@Body() formData) {
       return this.SigninService.updateUserPassword(formData);
 }
 }

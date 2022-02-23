@@ -14,28 +14,28 @@ export class UsersController {
     ) {}
 
     @ApiOperation({summary: 'Создание пользователя'}) //описывает для чего данный запрос
-    // @ApiResponse({status: 200, type: User}) // ожидаемый ответ от сервера
+    @ApiResponse({status: 200, type: User}) // ожидаемый ответ от сервера
     @Post()
     create(@Body() userDto: CreateUserDto):Promise<User> {
         return this.usersService.createUser(userDto);
     }
 
     @ApiOperation({summary: 'Получение всех пользователей'})
-    // @ApiResponse({status: 200, type: [User]})
+    @ApiResponse({status: 200, type: [User]})
     @Get()
     getAll():Promise<User[]> {
         return this.usersService.getAllUsers();
     }
 
     @ApiOperation({summary: 'Получение пользывателя по id'})
-    // @ApiResponse({status: 200, type: User})
+    @ApiResponse({status: 200, type: User})
     @Get(':id')
     getOne(@Param() params: oneUser):Promise<User> {
         return this.usersService.getOneUser(params);
     }
 
     @ApiOperation({summary: 'Удалить пользывателя по id'})
-    // @ApiResponse({status: 200, type: User})
+    @ApiResponse({status: 200, type: User})
     @Delete('?')
     del(@Query('id') id: oneUser):Promise<string> {
         return this.usersService.removeUser(id);

@@ -8,7 +8,7 @@ import { User } from './users.entity';
 const entities = [User];
 
 
-//Datavase connection
+//Database connection
 @Module({
   providers: [UsersService],
   imports:[

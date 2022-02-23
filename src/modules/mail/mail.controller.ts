@@ -6,9 +6,9 @@ export class MailController {
     constructor(
         private mailService: MailService
     ) {}
-    //Controller to send a mail
+
     @Post('mail/send-reset-password-mail')
-        create(@Body() data){
-            return this.mailService.sendPasswordMail(data.email)
+        send(@Body() data){
+            return this.mailService.sendResetPasswordMail(data.email)
         }
 }
