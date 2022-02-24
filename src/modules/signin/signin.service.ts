@@ -7,22 +7,30 @@ require('dotenv').config()
 
 @Injectable()
 export class SigninService {
-  async signInByEmail(formData: SigninFormDto):Promise<User | String>{
-      const user = await User.findOne({where: {
+  async signInByEmail(formData: SigninFormDto):Promise<User | string>{
+      try {
+        const user = await User.findOne({where: {
           email: formData.email,
         }
       })
-       const isMatch = await bcrypt.compare( formData.password ,user.password)
+      if (!user) {
+        throw "Incorrect email or password"
+      }
+        const isMatch = await bcrypt.compare( formData.password ,user.password)
         if (user && isMatch) {
           delete user.password;
           return user;
         }else{
-          return "Incorrect email or password"
+          throw "Incorrect email or password"
         }
+      } catch (error) {
+        return error
+      }
+
       }
   
 
-  async googleLogin(req):Promise<User | String> {
+  async googleLogin(req):Promise<User | string> {
       if (!req.user) {
         return 'No user from google';
       }else{

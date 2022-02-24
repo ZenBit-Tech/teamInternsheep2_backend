@@ -1,16 +1,18 @@
 import { Module } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { RegisterModule } from '../register/register.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersController } from "./users.controller";
+import { UsersService } from "./users.service";
 import { SigninModule } from '../signin/signin.module';
 import { User } from './users.entity';
 
 const entities = [User];
 
-
 //Database connection
 @Module({
-  providers: [UsersService],
+  controllers:[UsersController],
+  providers:[UsersService],
   imports:[
     ConfigModule.forRoot({
       isGlobal: true,
@@ -18,13 +20,13 @@ const entities = [User];
     TypeOrmModule.forRoot({
       type:"mysql",
       host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT),
+      port: Number(process.env.DB_PORT),
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       entities: entities,
-      synchronize: true,
+      synchronize: false,
     }),
-  SigninModule]
+  SigninModule, RegisterModule],
 })
 export class UsersModule {}

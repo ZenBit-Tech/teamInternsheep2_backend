@@ -1,8 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
-export class User {
+export class User extends BaseEntity{
   @ApiProperty({ example: '1', description: 'Unique identificator' })
   @PrimaryGeneratedColumn({ type: 'int' })
   id: number;
@@ -34,4 +34,5 @@ export class User {
   @ApiProperty({ example: 'Freelancer', description: 'userRole' })
   @Column({ type: 'enum', enum: ['Freelancer', 'Employer'] })
   userRole: string;
+  static findOne: any;
 }

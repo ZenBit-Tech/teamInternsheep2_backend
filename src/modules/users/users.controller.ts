@@ -1,21 +1,13 @@
-import {Body, Controller, Delete, Get, Param, Post, Query} from '@nestjs/common';
+import {Controller, Delete, Get, Param, Post, Query} from '@nestjs/common';
 import {UsersService} from './users.service';
-import {CreateUserDto} from '../dto/create.user.dto';
 import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {User} from "./users.entity";
-import {oneUser} from '../dto/findOne.user.dto'
+import {findOne} from '../dto/findOne.user.dto'
 
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
-
-  @ApiOperation({ summary: 'User creation' })
-  @ApiResponse({ status: 200, type: User })
-  @Post()
-  create(@Body() userDto: CreateUserDto): Promise<User> {
-    return this.usersService.createUser(userDto);
-  }
 
   @ApiOperation({ summary: 'Getting all users' })
   @ApiResponse({ status: 200, type: [User] })
@@ -27,14 +19,14 @@ export class UsersController {
   @ApiOperation({ summary: 'Getting a user by id' })
   @ApiResponse({ status: 200, type: User })
   @Get(':id')
-  getOne(@Param() params: oneUser): Promise<User> {
+  getOne(@Param() params: findOne): Promise<User> {
     return this.usersService.getOneUser(params);
   }
 
   @ApiOperation({ summary: 'Delete user by id' })
   @ApiResponse({ status: 200, type: User })
   @Delete('?')
-  del(@Query('id') id: oneUser): Promise<string> {
+  del(@Query('id') id: findOne): Promise<string> {
     return this.usersService.removeUser(id);
   }
 }
