@@ -5,14 +5,21 @@ import { User } from '../users/users.entity';
 @Injectable()
 export class MailService {
   constructor(private readonly mailerService: MailerService) {}
-  
-  async sendResetPasswordMail(email:string){
+  async sendResetPasswordMail(email:string, request){
     try {
       const user = await User.findOne({where: {
         email: email,
       }
     })
     if (user) {
+
+      request.session.passwordReset = {
+        sessionName:"reset-user-password",
+        email:email,
+        expires:new Date(Date.now() + 600000),
+        maxAge:600000  
+      }
+
       this.mailerService.sendMail({
         to: `${email}`,
         from: process.env.MAIL_DEFAULT_FROM,
