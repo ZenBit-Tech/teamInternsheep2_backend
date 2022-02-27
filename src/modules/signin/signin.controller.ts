@@ -1,3 +1,4 @@
+require('isomorphic-fetch');
 import { Controller, Body, Post, Get, Req, UseGuards, Patch} from '@nestjs/common';
 import { SigninFormDto } from "../dto/signin.user.dto";
 import { SigninService } from './signin.service';
@@ -27,11 +28,12 @@ export class SigninController {
       return this.SigninService.updateUserPassword(formData);
 }
   @Get('get-reset-password-session')
-    checkSession(@Req() request){
-      if (request.session.passwordReset && request.session.passwordReset.sessionName === process.env.RESET_PASSWORD_SESSION_NAME) {
-        return request.session.passwordReset
-      } else {
-       return "No session avalible"
+    check(@Req() request){
+      request.sessionStore.all((err, sessions)=>{ console.log(sessions);
+       })
+      const {session_id} = request.body
+      if (request.session[`passwordReset${session_id}`] && request.session[`passwordReset${session_id}`].session_id) {
+        return request.session[`passwordReset${session_id}`]
       }
     }
 }

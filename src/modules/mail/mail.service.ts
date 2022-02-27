@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
 import { MailerService } from '@nestjs-modules/mailer';
 import { User } from '../users/users.entity';
 
@@ -12,12 +13,13 @@ export class MailService {
       }
     })
     if (user) {
-
-      request.session.passwordReset = {
-        sessionName:"reset-user-password",
-        email:email,
-        expires:new Date(Date.now() + 600000),
-        maxAge:600000  
+      const session_id = uuidv4()
+      request.session[`passwordReset${session_id}`] = {
+        session_id:session_id,
+        session_name:"reset-user-password",
+        user_email:email,
+        expires:new Date(Date.now() + 1800000),
+        maxAge:1800000 
       }
 
       this.mailerService.sendMail({
@@ -28,7 +30,7 @@ export class MailService {
         html: `<div>
                 <h1>Hello ${email}!</h1>
                 <p>A request has been received to change the password for your account.</p>
-                <a href="https://www.google.com" target="_blank">
+                <a href="http://localhost:3000/change-password/${session_id}" target="_blank">
                   <button>Reset password</button>
                 </a>
               </div>`,
