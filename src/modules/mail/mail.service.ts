@@ -13,10 +13,10 @@ export class MailService {
       }
     })
     if (user) {
-      return this.mailerService.sendMail({
+      this.mailerService.sendMail({
         to: `${email}`,
         from: process.env.MAIL_DEFAULT_FROM,
-        subject: 'Welcome!',
+        subject: 'Hello!',
         text: 'Use this password',
         html: `<div>
                 <h1>Hello ${email}!</h1>
@@ -26,8 +26,9 @@ export class MailService {
                 </a>
               </div>`,
       })
+      return "Mail successfully sent."
     } else {
-      throw "Email not registered"
+      throw "Email not registered."
     }
     } catch (error) {
       return error

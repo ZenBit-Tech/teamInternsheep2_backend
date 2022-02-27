@@ -23,7 +23,15 @@ export class SigninController {
   }
 
   @Patch('update-password')
-    update(@Body() formData) {
+    update(@Body() formData:{email:string, password:string}) {
       return this.SigninService.updateUserPassword(formData);
 }
+  @Get('get-reset-password-session')
+    checkSession(@Req() request){
+      if (request.cookies && request.cookies.cookieName === process.env.RESET_PASSWORD_SESSION_NAME) {
+        return request.cookies
+      } else {
+       return "No session avalible"
+      }
+    }
 }
