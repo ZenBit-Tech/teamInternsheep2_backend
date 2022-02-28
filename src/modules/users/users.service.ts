@@ -1,25 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './users.entity';
 import { getConnection, Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create.user.dto';
-import { oneUser } from './dto/findOne.user.dto';
+import { findOne } from '../dto/findOne.user.dto';
+import { UsersModule } from './users.module';
 
 @Injectable()
 export class UsersService {
   constructor(
+    @Inject(forwardRef(() => UsersModule))
     @InjectRepository(User)
     private usersRepository: Repository<User>,
   ) {}
-
-  async createUser(dto: CreateUserDto): Promise<User> {
-    try {
-      const user = await this.usersRepository.save(dto);
-      return user;
-    } catch (e) {
-      return e;
-    }
-  }
 
   async getAllUsers(): Promise<User[]> {
     try {
@@ -30,7 +22,7 @@ export class UsersService {
     }
   }
 
-  async getOneUser(id: oneUser): Promise<User> {
+  async getOneUser(id: findOne): Promise<User> {
     try {
       const user = await this.usersRepository.findOne({ where: id });
       return user;
@@ -39,7 +31,7 @@ export class UsersService {
     }
   }
 
-  async removeUser(id: oneUser): Promise<string> {
+  async removeUser(id: findOne): Promise<string> {
     try {
       await getConnection()
         .createQueryBuilder()
