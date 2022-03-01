@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../users/users.entity';
 import {getConnection} from 'typeorm';
+import {ContactsEditValue} from "../dto/contact.edit.dto"
 
 @Injectable()
 export class SettingsService {
-    async updateUserContacts(formData):Promise<string> {
+    async updateUserContacts(formData:ContactsEditValue):Promise<string> {
           try {
             await getConnection()
                 .createQueryBuilder()
