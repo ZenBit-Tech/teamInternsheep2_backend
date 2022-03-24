@@ -16,29 +16,33 @@ export class RegisterService {
   ) {}
 
   async registration(dto: CreateUserDto) {
-    let candidate = await this.getUserByEmail(dto.email);
-    if (candidate) {
-      throw new HttpException(
-        'a user with the same email already exists ',
-        HttpStatus.BAD_REQUEST,
+    try {
+      let candidate = await this.getUserByEmail(dto.email);
+      if (candidate) {
+        throw new HttpException(
+            'a user with the same email already exists ',
+            HttpStatus.BAD_REQUEST,
+        );
+      }
+      candidate = await this.getUserByPhone(dto.phoneNumber);
+      if (candidate) {
+        throw new HttpException(
+            'a user with the same phone number already exists ',
+            HttpStatus.BAD_REQUEST,
+        );
+      }
+      const hashPassword = await bcrypt.hash(
+          dto.password,
+          Number(process.env.SALT_OR_ROUNDS),
       );
+      const user = await this.usersRepository.save({
+        ...dto,
+        password: hashPassword,
+      });
+      return this.generateToken(user);
+    } catch (e){
+
     }
-    candidate = await this.getUserByPhone(dto.phoneNumber);
-    if (candidate) {
-      throw new HttpException(
-        'a user with the same phone number already exists ',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    const hashPassword = await bcrypt.hash(
-      dto.password,
-      Number(process.env.SALT_OR_ROUNDS),
-    );
-    const user = await this.usersRepository.save({
-      ...dto,
-      password: hashPassword,
-    });
-    return this.generateToken(user);
   }
 
   async generateToken(user: User) {
@@ -56,12 +60,22 @@ export class RegisterService {
   }
 
   async getUserByEmail(email: string) {
-    const user = await this.usersRepository.findOne({ where: { email } });
-    return user;
+    try {
+      const user = await this.usersRepository.findOne({ where: { email } });
+      return user;
+    } catch (e) {
+      return '' + e;
+    }
   }
 
   async getUserByPhone(phoneNumber: string) {
-    const user = await this.usersRepository.findOne({ where: { phoneNumber } });
-    return user;
+    try {
+      const user = await this.usersRepository.findOne({
+        where: { phoneNumber },
+      });
+      return user;
+    } catch (e) {
+      return '' + e;
+    }
   }
 }

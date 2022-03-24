@@ -12,7 +12,7 @@ export class RegisterController {
   @ApiOperation({ summary: 'User creation' })
   @ApiResponse({ status: 200, type: User })
   @Post('/registration')
-  create(@Body() userDto: CreateUserDto) {
+  create(@Body() userDto: CreateUserDto): Promise<{ token: string }> {
     return this.registerService.registration(userDto);
   }
 }
