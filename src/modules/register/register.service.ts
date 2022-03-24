@@ -1,5 +1,8 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
+
 import { User } from '../users/users.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from '../dto/create.user.dto';
@@ -9,14 +12,70 @@ export class RegisterService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private readonly jwtService: JwtService,
   ) {}
 
-  async createUser(dto: CreateUserDto): Promise<User> {
+  async registration(dto: CreateUserDto) {
     try {
-      const user = await this.usersRepository.save(dto);
+      let candidate = await this.getUserByEmail(dto.email);
+      if (candidate) {
+        throw new HttpException(
+            'a user with the same email already exists ',
+            HttpStatus.BAD_REQUEST,
+        );
+      }
+      candidate = await this.getUserByPhone(dto.phoneNumber);
+      if (candidate) {
+        throw new HttpException(
+            'a user with the same phone number already exists ',
+            HttpStatus.BAD_REQUEST,
+        );
+      }
+      const hashPassword = await bcrypt.hash(
+          dto.password,
+          Number(process.env.SALT_OR_ROUNDS),
+      );
+      const user = await this.usersRepository.save({
+        ...dto,
+        password: hashPassword,
+      });
+      return this.generateToken(user);
+    } catch (e){
+
+    }
+  }
+
+  async generateToken(user: User) {
+    const payload = {
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      id: user.id,
+      userRole: user.userRole,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
+    return {
+      token: this.jwtService.sign(payload),
+    };
+  }
+
+  async getUserByEmail(email: string) {
+    try {
+      const user = await this.usersRepository.findOne({ where: { email } });
       return user;
     } catch (e) {
-      throw new ConflictException(e.sqlMessage);
+      return '' + e;
+    }
+  }
+
+  async getUserByPhone(phoneNumber: string) {
+    try {
+      const user = await this.usersRepository.findOne({
+        where: { phoneNumber },
+      });
+      return user;
+    } catch (e) {
+      return '' + e;
     }
   }
 }
