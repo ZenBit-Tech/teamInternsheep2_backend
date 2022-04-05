@@ -1,11 +1,11 @@
-import {Injectable, UnauthorizedException} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { SigninFormDto } from '../dto/signin.user.dto';
 import { User } from '../users/users.entity';
-import {getConnection, Repository} from 'typeorm';
+import { getConnection, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import {InjectRepository} from "@nestjs/typeorm";
-
+import { InjectRepository } from '@nestjs/typeorm';
+import { signinEntity } from './signin.entity';
 
 require('dotenv').config();
 
@@ -17,11 +17,17 @@ export class SigninService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signInByEmail(dto: SigninFormDto) {
+  async signInByEmail(dto: SigninFormDto): Promise<signinEntity> {
     const user = await this.validateUser(dto);
     if (user.status === 401) return user;
 
-    return this.generateToken(user);
+    return {
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phoneNumber: user.phoneNumber,
+      token: await this.generateToken(user),
+    };
   }
 
   async validateUser(dto: SigninFormDto) {
@@ -48,7 +54,7 @@ export class SigninService {
     }
   }
 
-  private async generateToken(user: User) {
+  private async generateToken(user: User): Promise<string> {
     const payload = {
       email: user.email,
       phoneNumber: user.phoneNumber,
@@ -57,12 +63,10 @@ export class SigninService {
       firstName: user.firstName,
       lastName: user.lastName,
     };
-    return {
-      token: this.jwtService.sign(payload),
-    };
+    return this.jwtService.sign(payload);
   }
 
-  async googleLogin(req): Promise<User | string> {
+  async googleLogin(req): Promise<signinEntity | string> {
     if (!req.user) {
       return 'No user from google';
     }
@@ -73,11 +77,17 @@ export class SigninService {
     });
     if (user) {
       delete user.password;
-      return user;
+      return {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        token: await this.generateToken(user),
+      };
     }
     const option: object = {
       firstName: req.user.firstName,
-      lastName: req.user.lastName ? req.user.lastName : '',
+      lastName: req.user.lastName || '',
       email: req.user.email,
       password: '',
       phoneNumber: null,
@@ -86,7 +96,14 @@ export class SigninService {
     // @ts-ignore
     user = await User.save(option);
     delete user.password;
-    return user;
+    console.log(user);
+    return {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      token: await this.generateToken(user),
+    };
   }
 
   async updateUserPassword(formData): Promise<string> {
@@ -109,5 +126,7 @@ export class SigninService {
     }
     return 'An error occurred.';
   }
+
+
 
 }
