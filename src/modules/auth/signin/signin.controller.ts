@@ -9,7 +9,7 @@ import {
   Patch,
   Res,
 } from '@nestjs/common';
-import { SigninFormDto } from '../dto/signin.user.dto';
+import { SigninFormDto } from '../../dto/signin.user.dto';
 import { SigninService } from './signin.service';
 import { AuthGuard } from '@nestjs/passport';
 import { signinEntity } from './signin.entity';
@@ -28,15 +28,19 @@ export class SigninController {
     @Req() req,
     @Res() res,
   ): Promise<signinEntity | string> {
-    const user = await this.SigninService.googleLogin(req);
-    if (user) {
-      res.redirect(`${String(process.env.CLIENT_URL)}/google/successful`);
-      return user;
+    try {
+      const user = await this.SigninService.googleLogin(req);
+      if (user) {
+        res.redirect(`${String(process.env.CLIENT_URL)}/google/successful`);
+        return user;
+      }
+    } catch (e) {
+      return e;
     }
   }
 
   @Post('auth/signin')
-  authorize(@Body() formData: SigninFormDto): Promise<signinEntity> {
+  authorize(@Body() formData: SigninFormDto): Promise<signinEntity | string> {
     return this.SigninService.signInByEmail(formData);
   }
 
@@ -47,17 +51,4 @@ export class SigninController {
     return this.SigninService.updateUserPassword(formData);
   }
 
-  @Get('get-reset-password-session')
-  check(@Req() request) {
-    request.sessionStore.all((err, sessions) => {
-      console.log(sessions);
-    });
-    const { session_id } = request.body;
-    if (
-      request.session[`passwordReset${session_id}`] &&
-      request.session[`passwordReset${session_id}`].session_id
-    ) {
-      return request.session[`passwordReset${session_id}`];
-    }
-  }
 }
