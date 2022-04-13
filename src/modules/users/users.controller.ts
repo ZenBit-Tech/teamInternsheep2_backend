@@ -1,8 +1,8 @@
-import {Controller, Delete, Get, Param, Post, Query} from '@nestjs/common';
-import {UsersService} from './users.service';
-import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
-import {User} from "./users.entity";
-import {findOne} from '../dto/findOne.user.dto'
+import { Controller, Delete, Get, Param, Query } from '@nestjs/common';
+import { UsersService } from './users.service';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { User } from './users.entity';
+import { findOne } from '../dto/findOne.user.dto';
 
 @ApiTags('Users')
 @Controller('users')
