@@ -1,12 +1,8 @@
-import { BaseEntity, Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
-export class User extends BaseEntity {
-  @ApiProperty({ example: '1', description: 'Unique identificator' })
-  @PrimaryGeneratedColumn({ type: 'int' })
-  id: number;
-
+export class signinEntity {
   @ApiProperty({ example: 'Bob', description: 'First name' })
   @Column({ type: 'varchar', width: 30 })
   firstName: string;
@@ -19,10 +15,6 @@ export class User extends BaseEntity {
   @Column({ type: 'varchar', width: 50, unique: true })
   email: string;
 
-  @ApiProperty({ example: '111111', description: 'password' })
-  @Column({ type: 'varchar', width: 50 })
-  password: string;
-
   @ApiProperty({ example: '+380509995263', description: 'Phone number' })
   @Column({
     type: 'varchar',
@@ -32,13 +24,11 @@ export class User extends BaseEntity {
   })
   phoneNumber: string;
 
-  @ApiProperty({ example: 'Freelancer', description: 'userRole' })
-  @Column({
-    type: 'enum',
-    enum: ['Freelancer', 'Employer'],
-    nullable: true,
+  @ApiProperty({
+    example:
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Inp6b21iaTFAcmFtYmxuZXJsZS51YSIsInBob25lTnVtYmVyIjoiKzM4MDUwODgzNDgyIiwiaWQiOjcsInVzZXJSb2xlIjoiRW1wbG95ZXIiLCJmaXJzdE5hbWUiOiJhcnRlbSIsImxhc3ROYW1lIjoiemh1cmJleSIsImlhdCI6MTY0ODY0OTcxOCwiZXhwIjoxNjQ4NzM2MTE4fQ.DPlcoLJMO23yQY7u2MYbUE5O-FnP7mIV5MoZvcH3sLo',
+    description: 'jwtToken',
   })
-  userRole: string;
-
-  static findOne: any;
+  @Column({ type: 'varchar', width: 30 })
+  token: any;
 }
