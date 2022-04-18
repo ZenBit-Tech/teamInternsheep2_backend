@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
-import { User } from '../../users/users.entity';
+import { User } from '../../../entities/users.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from '../../dto/create.user.dto';
 
@@ -40,7 +40,9 @@ export class RegisterService {
         password: hashPassword,
       });
       return this.generateToken(user);
-    } catch (e) {}
+    } catch (e) {
+      return e;
+    }
   }
 
   async generateToken(user: User) {

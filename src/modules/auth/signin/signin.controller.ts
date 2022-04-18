@@ -12,7 +12,7 @@ import {
 import { SigninFormDto } from '../../dto/signin.user.dto';
 import { SigninService } from './signin.service';
 import { AuthGuard } from '@nestjs/passport';
-import { signinEntity } from './signin.entity';
+import { ISignIn } from './signin.interface';
 
 @Controller()
 export class SigninController {
@@ -24,10 +24,7 @@ export class SigninController {
 
   @Get('google/redirect')
   @UseGuards(AuthGuard('google'))
-  async googleAuthRedirect(
-    @Req() req,
-    @Res() res,
-  ): Promise<signinEntity | string> {
+  async googleAuthRedirect(@Req() req, @Res() res): Promise<ISignIn | string> {
     try {
       const user = await this.SigninService.googleLogin(req);
       if (user) {
@@ -40,7 +37,7 @@ export class SigninController {
   }
 
   @Post('auth/signin')
-  authorize(@Body() formData: SigninFormDto): Promise<signinEntity | string> {
+  authorize(@Body() formData: SigninFormDto): Promise<ISignIn | string> {
     return this.SigninService.signInByEmail(formData);
   }
 
@@ -50,5 +47,4 @@ export class SigninController {
   ): Promise<string> {
     return this.SigninService.updateUserPassword(formData);
   }
-
 }
