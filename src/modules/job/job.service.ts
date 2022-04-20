@@ -8,7 +8,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Job } from 'src/entities/job.entity';
 import { Repository } from 'typeorm';
-import { JobDto } from '../dto/job.dto';
+import {JobDto, Pagination} from '../dto/job.dto';
 
 @Injectable()
 export class JobService {
@@ -33,10 +33,17 @@ export class JobService {
     }
   }
 
-  async getAllJobs(): Promise<Job[]> {
+  async getAllJobs(dto: Pagination): Promise<[Job[], number]> {
     try {
-      const jobs = await this.jobRepository.find();
+      const page: number = dto.page || 1;
+      const limit: number = dto.limit || 10;
+      const offset: number = page * limit - limit;
+      const jobs = await this.jobRepository.findAndCount({
+        take: limit,
+        skip: offset,
+      });
       return jobs;
+
     } catch (e) {
       return e;
     }

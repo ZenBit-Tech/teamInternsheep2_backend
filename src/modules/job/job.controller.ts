@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Query, UseGuards} from '@nestjs/common';
 import { JobService } from './job.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Job } from '../../entities/job.entity';
-import { JobDto } from '../dto/job.dto';
+import {JobDto, Pagination} from '../dto/job.dto';
 import { JwtAuthGuard } from '../auth/jwt.auth.guard';
 
 @ApiTags('Jobs')
@@ -21,8 +21,8 @@ export class JobController {
   @ApiOperation({ summary: 'Getting all jobs' })
   @ApiResponse({ status: 200, type: [Job] })
   @Get()
-  getAll(): Promise<Job[]> {
-    return this.jobService.getAllJobs();
+  getAll(@Query() dto: Pagination): Promise<[Job[] , number]> {
+    return this.jobService.getAllJobs(dto);
   }
 
   @ApiOperation({ summary: 'Getting a job by title' })
