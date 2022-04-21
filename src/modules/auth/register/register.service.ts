@@ -2,17 +2,17 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-
-import { User } from '../../users/users.entity';
 import { Repository } from 'typeorm';
+
+import { User } from 'src/entities/users.entity';
 import { CreateUserDto } from '../../dto/create.user.dto';
 
 @Injectable()
 export class RegisterService {
   constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
-    private readonly jwtService: JwtService,
+      @InjectRepository(User)
+      private usersRepository: Repository<User>,
+      private readonly jwtService: JwtService,
   ) {}
 
   async registration(dto: CreateUserDto) {
@@ -20,27 +20,29 @@ export class RegisterService {
       let candidate = await this.getUserByEmail(dto.email);
       if (candidate) {
         throw new HttpException(
-          'a user with the same email already exists ',
-          HttpStatus.BAD_REQUEST,
+            'a user with the same email already exists ',
+            HttpStatus.BAD_REQUEST,
         );
       }
       candidate = await this.getUserByPhone(dto.phoneNumber);
       if (candidate) {
         throw new HttpException(
-          'a user with the same phone number already exists ',
-          HttpStatus.BAD_REQUEST,
+            'a user with the same phone number already exists ',
+            HttpStatus.BAD_REQUEST,
         );
       }
       const hashPassword = await bcrypt.hash(
-        dto.password,
-        Number(process.env.SALT_OR_ROUNDS),
+          dto.password,
+          Number(process.env.SALT_OR_ROUNDS),
       );
       const user = await this.usersRepository.save({
         ...dto,
         password: hashPassword,
       });
       return this.generateToken(user);
-    } catch (e) {}
+    } catch (e) {
+      return e;
+    }
   }
 
   async generateToken(user: User) {

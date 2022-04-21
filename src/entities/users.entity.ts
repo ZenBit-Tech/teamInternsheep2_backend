@@ -1,5 +1,12 @@
-import { BaseEntity, Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { Bid } from './bid.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -40,5 +47,6 @@ export class User extends BaseEntity {
   })
   userRole: string;
 
-  static findOne: any;
+  @OneToMany(() => Bid, (bid) => bid.user)
+  bids: Bid[];
 }

@@ -1,12 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { SigninFormDto } from '../../dto/signin.user.dto';
-import { User } from '../../users/users.entity';
+import { User } from '../../../entities/users.entity';
 import { getConnection, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { signinEntity } from './signin.entity';
-import {getSystemErrorName} from "util";
+import { ISignIn } from './signin.interface';
 
 require('dotenv').config();
 
@@ -18,10 +17,10 @@ export class SigninService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signInByEmail(dto: SigninFormDto): Promise<signinEntity | string> {
+  async signInByEmail(dto: SigninFormDto): Promise<ISignIn | string> {
     try {
       const user = await this.validateUser(dto);
-      const result = { message: '' , status: null};
+      const result = { message: '', status: null };
       // that find error in user
       for (const [key, value] of Object.entries(user)) {
         if (key === 'message') result.message = value;
@@ -83,7 +82,7 @@ export class SigninService {
     }
   }
 
-  async googleLogin(req): Promise<signinEntity | string> {
+  async googleLogin(req): Promise<ISignIn | string> {
     try {
       if (!req.user) {
         return 'No user from google';
