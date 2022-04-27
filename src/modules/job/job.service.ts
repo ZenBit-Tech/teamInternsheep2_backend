@@ -97,7 +97,6 @@ export class JobService {
     try {
       const job = await this.jobRepository.findOne({ where: { id: id } });
       let arr = []
-      console.log(job)
 
       const jobTags = await this.jobTagsRepository.find({
         where: { jobId: id },
