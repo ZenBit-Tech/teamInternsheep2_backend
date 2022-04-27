@@ -30,6 +30,9 @@ export class JobDto {
 
   @ApiProperty({ example: '2', description: 'User id' })
   userId: string;
+
+  @ApiProperty({ example: '[test1, test2]', description: 'tags' })
+  tags: string[];
 }
 
 export class Pagination {
