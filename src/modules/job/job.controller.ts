@@ -1,4 +1,14 @@
-import {Body, Controller, Get, Param, ParseIntPipe, Post, Query, UseGuards} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Query,
+  Req,
+  UseGuards
+} from '@nestjs/common';
 import { JobService } from './job.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Job } from '../../entities/job.entity';
@@ -15,8 +25,13 @@ export class JobController {
   @ApiResponse({ status: 200, type: [Job] })
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() dto: JobDto): Promise<Job | string> {
-    return this.jobService.createJob(dto);
+  async create(
+    @Body() dto: JobDto,
+    @Req() req,
+
+  ): Promise<Job | string> {
+
+    return this.jobService.createJob(dto, req.user.id);
   }
 
   @ApiOperation({ summary: 'Getting all jobs' })
@@ -24,15 +39,10 @@ export class JobController {
   @Get('/getAll')
   getAll(
     @Query() dto: Pagination,
-  ): Promise<{ listJobs: jobInterface[]; totalJobs: number }> {
-    return this.jobService.getAllJobs(dto);
-  }
+  ): Promise<[jobInterface[], number ]> {
 
-  @ApiOperation({ summary: 'Getting a job by title' })
-  @ApiResponse({ status: 200, type: Job })
-  @Get('/title')
-  getOneByTitle(@Body() title: string): Promise<Job> {
-    return this.jobService.getJobByTitle(title);
+
+    return this.jobService.getAllJobs(dto);
   }
 
   @ApiOperation({ summary: 'Getting a job by id' })

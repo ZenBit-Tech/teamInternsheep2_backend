@@ -1,3 +1,12 @@
+interface tagsJobInterface {
+  id: number;
+  tagsId: number;
+  jobId: number;
+  tags: {
+    name: string;
+  };
+}
+
 export interface jobInterface {
   id: number;
   title: string;
@@ -5,5 +14,5 @@ export interface jobInterface {
   hourlyRate: string;
   duration: string;
   englishLevel: string;
-  tags: string[];
+  tagsToJobs: tagsJobInterface[];
 }
