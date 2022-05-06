@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Bid } from './bid.entity';
+import {Job} from "./job.entity";
 
 @Entity()
 export class User extends BaseEntity {
@@ -49,4 +50,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Bid, (bid) => bid.user)
   bids: Bid[];
+
+  @OneToMany( () => Job, (job) => job.user)
+  jobs: Job[];
 }

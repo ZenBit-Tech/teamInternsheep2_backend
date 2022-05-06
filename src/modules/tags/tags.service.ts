@@ -5,7 +5,6 @@ import { Repository } from 'typeorm';
 import { Tags } from 'src/entities/tags.entity';
 import { TagDto } from '../dto/tag.dto';
 
-
 @Injectable()
 export class TagsService {
   constructor(
@@ -18,8 +17,8 @@ export class TagsService {
       const featureTag = await this.getTagByName(dto.name);
       if (featureTag) {
         throw new HttpException(
-            'a tage with the same name already exists ',
-            HttpStatus.BAD_REQUEST,
+          'a tage with the same name already exists ',
+          HttpStatus.BAD_REQUEST,
         );
       }
       const tag = await this.tagRepository.save(dto);
@@ -32,6 +31,15 @@ export class TagsService {
   async getTagByName(name: string): Promise<Tags> {
     try {
       const tag = await this.tagRepository.findOne({ where: { name } });
+      return tag;
+    } catch (e) {
+      return e;
+    }
+  }
+
+  async getTagId(id: number): Promise<Tags> {
+    try {
+      const tag = await this.tagRepository.findOne({ where: { id } });
       return tag;
     } catch (e) {
       return e;
