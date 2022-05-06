@@ -3,12 +3,13 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  OneToMany,
+  OneToMany, ManyToOne,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { TagsJob } from './tags_job.entity';
 import { Bid } from './bid.entity';
+import {User} from "./users.entity";
 
 @Entity()
 export class Job extends BaseEntity {
@@ -47,4 +48,7 @@ export class Job extends BaseEntity {
 
   @OneToMany(() => Bid, (bid) => bid.job)
   bids: Bid[];
+
+  @ManyToOne(() => User, (user) => user.jobs)
+  user: User;
 }
