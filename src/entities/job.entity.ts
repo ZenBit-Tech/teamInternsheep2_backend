@@ -3,13 +3,14 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  OneToMany, ManyToOne,
+  OneToMany,
+  ManyToOne,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { TagsJob } from './tags_job.entity';
 import { Bid } from './bid.entity';
-import {User} from "./users.entity";
+import { User } from './users.entity';
 
 @Entity()
 export class Job extends BaseEntity {
@@ -21,7 +22,7 @@ export class Job extends BaseEntity {
   @Column({ type: 'varchar', width: 255, unique: true })
   title: string;
 
-  @ApiProperty({ example: 'create api for bot', description: 'description' })
+  @ApiProperty({ example: 'createJob api for bot', description: 'description' })
   @Column({ type: 'text' })
   description: string;
 
@@ -42,6 +43,11 @@ export class Job extends BaseEntity {
     enum: ['Advanced', 'Intermediate', 'Elementary'],
   })
   englishLevel: string;
+
+  @Column({
+    type: 'int',
+  })
+  userId: number;
 
   @OneToMany(() => TagsJob, (tagsToJob) => tagsToJob.job)
   tagsToJobs!: TagsJob[];
