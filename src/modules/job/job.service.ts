@@ -1,4 +1,8 @@
-import {Injectable, HttpException, HttpStatus, UseGuards} from '@nestjs/common';
+import {
+  Injectable,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Job } from 'src/entities/job.entity';
 import { Repository } from 'typeorm';
@@ -6,9 +10,7 @@ import { JobDto, Pagination } from '../dto/job.dto';
 import { TagsJob } from 'src/entities/tags_job.entity';
 
 import { TagsService } from '../tags/tags.service';
-import { jobInterface } from './job.interface';
 import { Tags } from 'src/entities/tags.entity';
-import {JwtAuthGuard} from "../auth/jwt.auth.guard";
 
 @Injectable()
 export class JobService {
@@ -33,7 +35,8 @@ export class JobService {
           HttpStatus.BAD_REQUEST,
         );
       }
-      const job = await this.jobRepository.save({ ...dto, userId: userId });
+      const test = { ...dto, userId: userId };
+      const job = await this.jobRepository.save(test);
       await this.addTagsToJob(dto.tags, job.id);
 
       return job;
@@ -42,22 +45,24 @@ export class JobService {
     }
   }
 
-  async getAllJobs(
-    dto: Pagination,
-  ): Promise<[jobInterface[], number ]> {
+  async getAllJobs(dto: Pagination): Promise<[Job[], number]> {
     try {
       const page: number = dto.page || 1;
       const limit: number = dto.limit || 10;
       const offset: number = page * limit - limit;
 
       const jobsWithTags = await this.jobRepository
-          .createQueryBuilder('job')
-          .leftJoinAndSelect('job.tagsToJobs', 'TagsJob' , 'job.id = TagsJob.jobId')
-          .leftJoinAndSelect('TagsJob.tags', 'Tags', 'Tags.id = TagsJob.tagsId')
-          .select(['job', 'TagsJob', 'Tags.name'])
-          .take(limit)
-          .skip(offset)
-          .getManyAndCount();
+        .createQueryBuilder('job')
+        .leftJoinAndSelect(
+          'job.tagsToJobs',
+          'TagsJob',
+          'job.id = TagsJob.jobId',
+        )
+        .leftJoinAndSelect('TagsJob.tags', 'Tags', 'Tags.id = TagsJob.tagsId')
+        .select(['job', 'TagsJob', 'Tags.name'])
+        .take(limit)
+        .skip(offset)
+        .getManyAndCount();
 
       return jobsWithTags;
     } catch (e) {
@@ -65,15 +70,19 @@ export class JobService {
     }
   }
 
-  async getJobById(id: number): Promise<jobInterface> {
+  async getJobById(id: number): Promise<Job> {
     try {
       const jobWithTags = await this.jobRepository
-          .createQueryBuilder('job')
-          .where('job.id = :id', {id: id})
-          .leftJoinAndSelect('job.tagsToJobs', 'TagsJob' , 'job.id = TagsJob.jobId')
-          .leftJoinAndSelect('TagsJob.tags', 'Tags', 'Tags.id = TagsJob.tagsId')
-          .select(['job', 'TagsJob', 'Tags.name'])
-          .getOne();
+        .createQueryBuilder('job')
+        .where('job.id = :id', { id: id })
+        .leftJoinAndSelect(
+          'job.tagsToJobs',
+          'TagsJob',
+          'job.id = TagsJob.jobId',
+        )
+        .leftJoinAndSelect('TagsJob.tags', 'Tags', 'Tags.id = TagsJob.tagsId')
+        .select(['job', 'TagsJob', 'Tags.name'])
+        .getOne();
 
       return jobWithTags;
     } catch (e) {
@@ -81,7 +90,7 @@ export class JobService {
     }
   }
 
-// закидує дані в проміжну таблицю
+  // закидує дані в проміжну таблицю
   async addTagsToJob(tags: string[], jobId: number): Promise<string> {
     try {
       for (const element of tags) {
