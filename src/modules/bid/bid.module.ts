@@ -4,11 +4,11 @@ import { AuthModule } from '../auth/auth.module';
 import { Bid } from 'src/entities/bid.entity';
 import { BidService } from './bid.service';
 import { BidController } from './bid.controller';
-import { User } from 'src/entities/users.entity';
+import { Job } from 'src/entities/job.entity';
 
 @Module({
   controllers: [BidController],
   providers: [BidService],
-  imports: [TypeOrmModule.forFeature([Bid, User]), AuthModule],
+  imports: [TypeOrmModule.forFeature([Bid, Job]), AuthModule],
 })
 export class BidModule {}

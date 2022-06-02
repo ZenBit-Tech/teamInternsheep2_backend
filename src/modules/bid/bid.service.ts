@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { getConnection, Repository } from 'typeorm';
 
 import { Bid } from 'src/entities/bid.entity';
-import { User } from 'src/entities/users.entity';
 import { BidDto } from '../dto/bid.dto';
+import { Job } from '../../entities/job.entity';
 
 @Injectable()
 export class BidService {
@@ -12,8 +12,8 @@ export class BidService {
     @InjectRepository(Bid)
     private bidRepository: Repository<Bid>,
 
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
+    @InjectRepository(Job)
+    private jobRepository: Repository<Job>,
   ) {}
 
   async createBid(dto: BidDto, userId: number): Promise<Bid | string> {
@@ -55,50 +55,36 @@ export class BidService {
 
   async getBidByStatus(userId: number): Promise<number> {
     try {
-      const bids = await this.userRepository
-        .createQueryBuilder('user')
-        .where('user.id = :userId', {
+      const bids = await this.jobRepository
+        .createQueryBuilder('job')
+        .where('job.userId = :userId', {
           userId: userId,
         })
-        .leftJoinAndSelect('user.jobs', 'Job')
-        .leftJoinAndSelect('Job.bids', 'Bid')
-        .getMany();
+        .leftJoinAndSelect('job.bids', 'Bid')
+        .select('COUNT(Bid.id) AS count')
+        .andWhere('Bid.id')
+        .getRawMany();
 
-      let count = 0;
-      bids[0].jobs.forEach((e) => {
-        e.bids.forEach((item) => {
-          if (item.isChecked == false)
-            // eslint-disable-next-line no-plusplus
-            count++;
-        });
-      });
-
-      return count;
+      return bids[0].count;
     } catch (e) {
       return e;
     }
   }
 
-  // юзер бере свої роботи і через роботи витаскує bid
+  // берем роботи з ід юзера і  витаскує bid
   async getAllBids(userId: number): Promise<Bid[]> {
     try {
-      const bids = await this.userRepository
-        .createQueryBuilder('user')
-        .where('user.id = :userId', {
+      const bids = await this.jobRepository
+        .createQueryBuilder('job')
+        .where('job.userId = :userId', {
           userId: userId,
         })
-        .leftJoinAndSelect('user.jobs', 'Job')
-        .leftJoinAndSelect('Job.bids', 'Bid')
-        .getMany();
+        .leftJoinAndSelect('job.bids', 'Bid')
+        .select('Bid')
+        .andWhere('Bid.id')
+        .getRawMany();
 
-      const result = [];
-      bids[0].jobs.forEach((e) => {
-        e.bids.forEach((item) => {
-          result.push(item);
-        });
-      });
-
-      return result;
+      return bids;
     } catch (e) {
       return e;
     }
