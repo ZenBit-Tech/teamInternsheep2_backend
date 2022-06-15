@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
+
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
 import { GoogleStrategy } from './modules/google/google.strategy';
@@ -6,9 +9,7 @@ import { MailModule } from './modules/mail/mail.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { JobModule } from './modules/job/job.module';
 import { TagsModule } from './modules/tags/tags.module';
-
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { BidModule } from './modules/bid/bid.module';
 
 @Module({
   providers: [AppService],
@@ -19,7 +20,7 @@ import { ConfigModule } from '@nestjs/config';
     SettingsModule,
     JobModule,
     TagsModule,
-
+    BidModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),

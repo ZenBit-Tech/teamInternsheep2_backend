@@ -16,10 +16,10 @@ export class Bid extends BaseEntity {
   id: number;
 
   @ApiProperty({
-    example: 'create unique design. with adaptive',
+    example: 'createJob unique design. with adaptive',
     description: 'description',
   })
-  @Column({ type: 'varchar', width: 30 })
+  @Column({ type: 'varchar' })
   description: string;
 
   @ApiProperty({ example: 'Sponque', description: 'Attachment' })
@@ -27,8 +27,20 @@ export class Bid extends BaseEntity {
   attachment: string;
 
   @ApiProperty({ example: '10$', description: 'Price' })
-  @Column({ type: 'varchar', width: 50, unique: true })
+  @Column({ type: 'varchar', width: 10 })
   price: string;
+
+  @ApiProperty({ example: 'isCheked', description: 'true' })
+  @Column({ type: 'varchar', width: 50, default: false })
+  isChecked: boolean;
+
+  @ApiProperty({ example: '1', description: 'job id' })
+  @Column({ type: 'int' })
+  userId: number;
+
+  @ApiProperty({ example: '2', description: 'user id' })
+  @Column({ type: 'int' })
+  jobId: number;
 
   @ManyToOne(() => User, (user) => user.bids)
   user!: User;
